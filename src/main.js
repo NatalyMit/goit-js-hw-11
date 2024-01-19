@@ -7,14 +7,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 const formEl = document.querySelector('.form-seach');
 const galleryEl = document.querySelector('.gallery-images');
 
-const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '41909271-8b5dab2225a1cd5a9757159a5';
-// const url = `${BASE_URL}?key=${API_KEY}&image_type=photo&orientation=horizontal&safesearch=true`;
-var URL =
-  'https://pixabay.com/api/?key=' +
-  API_KEY +
-  '&q=' +
-  encodeURIComponent('red roses');
 
 function checkResponse(res) {
   if (!res.ok) {
@@ -22,10 +15,15 @@ function checkResponse(res) {
   }
   return res.json();
 }
+
 function fetchGallery(images) {
-  return fetch('https://pixabay.com/api/?key=' + API_KEY + '&q=' + images).then(
-    checkResponse
-  );
+  return fetch(
+    'https://pixabay.com/api/?key=' +
+      API_KEY +
+      '&q=' +
+      images +
+      '&image_type=photo&orientation=horizontal&safesearch=true'
+  ).then(checkResponse);
 }
 formEl.addEventListener('submit', handleSearch);
 
