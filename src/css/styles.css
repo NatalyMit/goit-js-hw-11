@@ -28,6 +28,7 @@ p:last-child {
 }
 
 ul {
+  max-width: 1280px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -46,4 +47,34 @@ img {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+.gallery-images {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}
+
+.list-item {
+  flex-direction: row;
+  background-color: #fff;
+}
+.search-image {
+  display: block;
+  max-width: 360px;
+  object-fit: cover;
+  transition: 2s;
+  cursor: pointer;
+}
+
+.gallery-image:hover {
+  transform: scale(1.02);
+}
+
+.options {
+  display: flex;
+  flex-direction: row;
 }

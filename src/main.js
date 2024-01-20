@@ -31,6 +31,17 @@ function handleSearch(event) {
   event.preventDefault();
   const form = event.currentTarget;
   const inputValue = form.elements.query.value;
+  if (!inputValue) {
+    iziToast.show({
+      title: 'error',
+      messageColor: 'white',
+      message:
+        'Sorry, there are no images matching your search query. Please try again!',
+      position: 'topCenter',
+      color: 'red',
+    });
+    return;
+  }
 
   console.log(inputValue);
 
@@ -45,8 +56,10 @@ function handleSearch(event) {
         // console.log(hit);
         markup += createGallery(hit);
       }
-      console.log(markup);
+
       galleryEl.innerHTML = markup;
+
+      console.log(markup);
     })
     .catch(onFetchError)
     .finally(() => form.reset());
@@ -62,26 +75,31 @@ function createGallery({
   downloads,
 }) {
   return `<li class = "list-item">
-    <a href="${webformatURL}"><img src = "${largeImageURL}" alt = "${tags}" ></a>
-    <div>${likes}</div>
-    <div>${views}</div>
-    <div>${comments}</div>
-    <div>${downloads}</div>
+    <a href="${largeImageURL}" ><img class="search-image" src = "${webformatURL}" alt = "${tags}" >
+    <p class="options"> likes:${likes}</p>
+    <p class="options"> views:${views}</p>
+    <p class="options"> comments:${comments}</p>
+    <p class="options"> downloads:${downloads}</p>
+    </a>
+    
     </li>`;
 }
-//   const makeGallery = images
-//     .map(
-//       ({ url, alt }) =>
-//         `<li class = "list-item"><a href=""
-//         <img src = "${url}" alt = "${alt}" width = "300" ></a></li>`
-//     )
-//     .join('');
-//   console.log(makeGallery);
-//   const markup = ``;
-//   galleryEl.insertAdjacentHTML('beforeend', makeGallery);
-// }
 
 function onFetchError(error) {
-  alert('Упс, щось пішло не так і ми не знайшли ваше зображення');
-  console.error(error);
+  console.error();
+  if (hits === []) {
+    iziToast.show({
+      title: 'error',
+      messageColor: 'white',
+      message:
+        'Sorry, there are no images matching your search query. Please try again!',
+      position: 'topCenter',
+      color: 'red',
+    });
+    return;
+  }
 }
+
+const lightbox = new SimpleLightbox('.gallery-images a', {
+  captionDelay: 250,
+});
