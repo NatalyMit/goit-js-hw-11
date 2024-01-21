@@ -9,8 +9,6 @@ const galleryEl = document.querySelector('.gallery-images');
 const loaderEl = document.querySelector('.loader');
 const API_KEY = '41909271-8b5dab2225a1cd5a9757159a5';
 
-loaderEl.style.display = 'none';
-
 formEl.addEventListener('submit', handleSearch);
 
 function checkResponse(res) {
@@ -21,7 +19,6 @@ function checkResponse(res) {
 }
 
 function fetchGallery(images) {
-  loaderEl.style.display = 'inline-block';
   return fetch(
     'https://pixabay.com/api/?key=' +
       API_KEY +
@@ -46,11 +43,11 @@ function handleSearch(event) {
   const inputValue = form.elements.query.value;
   if (!inputValue) {
     iziToast.show({
-      title: 'error',
+      title: '❌',
       messageColor: 'white',
       message:
-        'Sorry, there are no images matching your search query. Please try again!',
-      position: 'topCenter',
+        'Sorry, there are no images matching your search query.Please try again!',
+      position: 'topRight',
       color: 'red',
     });
     loaderEl.style.display = 'none';
@@ -65,11 +62,11 @@ function handleSearch(event) {
 
       if (!data.total) {
         iziToast.show({
-          title: 'error',
+          title: '❌',
           messageColor: 'white',
           message:
             'Sorry, there are no images matching your search query. Please try again!',
-          position: 'topCenter',
+          position: 'topRight',
           color: 'red',
         });
         return;
@@ -86,7 +83,6 @@ function handleSearch(event) {
     .catch(error => console.log(error))
     .finally(() => {
       form.reset();
-      loaderEl.style.display = 'none';
     });
 }
 
