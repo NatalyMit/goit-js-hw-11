@@ -37,7 +37,11 @@ const lightbox = new SimpleLightbox('.gallery-images a', {
 
 function handleSearch(event) {
   event.preventDefault();
+
   loaderEl.style.display = 'block';
+
+  galleryEl.innerHTML = '';
+
   const form = event.currentTarget;
   const inputValue = form.elements.query.value;
   if (!inputValue) {
