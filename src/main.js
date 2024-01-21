@@ -6,8 +6,12 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const formEl = document.querySelector('.form-seach');
 const galleryEl = document.querySelector('.gallery-images');
-
+const loaderEl = document.querySelector('.loader');
 const API_KEY = '41909271-8b5dab2225a1cd5a9757159a5';
+
+loaderEl.style.display = 'none';
+
+formEl.addEventListener('submit', handleSearch);
 
 function checkResponse(res) {
   if (!res.ok) {
@@ -17,6 +21,7 @@ function checkResponse(res) {
 }
 
 function fetchGallery(images) {
+  loaderEl.style.display = 'inline-block';
   return fetch(
     'https://pixabay.com/api/?key=' +
       API_KEY +
@@ -25,7 +30,6 @@ function fetchGallery(images) {
       '&image_type=photo&orientation=horizontal&safesearch=true&per_page=9'
   ).then(checkResponse);
 }
-formEl.addEventListener('submit', handleSearch);
 
 const lightbox = new SimpleLightbox('.gallery-images a', {
   captionDelay: 250,
@@ -33,6 +37,7 @@ const lightbox = new SimpleLightbox('.gallery-images a', {
 
 function handleSearch(event) {
   event.preventDefault();
+  loaderEl.style.display = 'block';
   const form = event.currentTarget;
   const inputValue = form.elements.query.value;
   if (!inputValue) {
@@ -44,6 +49,7 @@ function handleSearch(event) {
       position: 'topCenter',
       color: 'red',
     });
+    loaderEl.style.display = 'none';
     return;
   }
 
@@ -51,9 +57,8 @@ function handleSearch(event) {
 
   fetchGallery(inputValue)
     .then(data => {
-      //   console.log(data);
       const hits = data.hits;
-      //   console.log(hits);
+
       if (!data.total) {
         iziToast.show({
           title: 'error',
@@ -67,7 +72,6 @@ function handleSearch(event) {
       }
       let markup = '';
       for (const hit of hits) {
-        // console.log(hit);
         markup += createGallery(hit);
       }
 
@@ -76,7 +80,10 @@ function handleSearch(event) {
       console.log(markup);
     })
     .catch(error => console.log(error))
-    .finally(() => form.reset());
+    .finally(() => {
+      form.reset();
+      loaderEl.style.display = 'none';
+    });
 }
 
 function createGallery({
