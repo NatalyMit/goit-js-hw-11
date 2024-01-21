@@ -22,10 +22,14 @@ function fetchGallery(images) {
       API_KEY +
       '&q=' +
       images +
-      '&image_type=photo&orientation=horizontal&safesearch=true'
+      '&image_type=photo&orientation=horizontal&safesearch=true&per_page=9'
   ).then(checkResponse);
 }
 formEl.addEventListener('submit', handleSearch);
+
+const lightbox = new SimpleLightbox('.gallery-images a', {
+  captionDelay: 250,
+});
 
 function handleSearch(event) {
   event.preventDefault();
@@ -50,7 +54,17 @@ function handleSearch(event) {
       //   console.log(data);
       const hits = data.hits;
       //   console.log(hits);
-
+      if (!data.total) {
+        iziToast.show({
+          title: 'error',
+          messageColor: 'white',
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+          position: 'topCenter',
+          color: 'red',
+        });
+        return;
+      }
       let markup = '';
       for (const hit of hits) {
         // console.log(hit);
@@ -58,10 +72,10 @@ function handleSearch(event) {
       }
 
       galleryEl.innerHTML = markup;
-
+      lightbox.refresh();
       console.log(markup);
     })
-    .catch(onFetchError)
+    .catch(error => console.log(error))
     .finally(() => form.reset());
 }
 
@@ -75,31 +89,15 @@ function createGallery({
   downloads,
 }) {
   return `<li class = "list-item">
-    <a href="${largeImageURL}" ><img class="search-image" src = "${webformatURL}" alt = "${tags}" >
-    <p class="options"> likes:${likes}</p>
-    <p class="options"> views:${views}</p>
-    <p class="options"> comments:${comments}</p>
-    <p class="options"> downloads:${downloads}</p>
+    <a href="${largeImageURL}" ><img class="search-image" src = "${webformatURL}" alt = "${tags}" ><div class="options">
+    <p class="options-item"> likes:<span class="options-item-span">${likes}</span></p>
+    <p class="options-item"> views:<span class="options-item-span">${views}</span></p>
+    <p class="options-item"> comments:<span class="options-item-span">${comments}</span></p>
+    <p class="options-item"> downloads:<span class="options-item-span">${downloads}</span></p></div>
+  
     </a>
     
     </li>`;
 }
 
-function onFetchError(error) {
-  console.error();
-  if (hits === []) {
-    iziToast.show({
-      title: 'error',
-      messageColor: 'white',
-      message:
-        'Sorry, there are no images matching your search query. Please try again!',
-      position: 'topCenter',
-      color: 'red',
-    });
-    return;
-  }
-}
-
-const lightbox = new SimpleLightbox('.gallery-images a', {
-  captionDelay: 250,
-});
+// gallery.on('show.simplelightbox', fetchGallery);
