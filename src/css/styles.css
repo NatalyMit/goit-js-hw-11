@@ -137,7 +137,6 @@ form.form-search {
 }
 .loader::before,
 .loader::after {
-  margin: 0;
   content: '';
   box-sizing: border-box;
   position: absolute;
