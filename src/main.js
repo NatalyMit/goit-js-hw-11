@@ -26,6 +26,7 @@ function fetchGallery(value) {
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: 'true',
+    per_page: '9',
   });
 
   const url = `${BASE_URL}/?${urlParams}`;
