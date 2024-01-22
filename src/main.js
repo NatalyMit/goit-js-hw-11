@@ -9,7 +9,7 @@ const galleryEl = document.querySelector('.gallery-images');
 const loaderEl = document.querySelector('.loader');
 
 formEl.addEventListener('submit', handleSearch);
-
+loaderEl.style.display = 'none';
 function checkResponse(res) {
   if (!res.ok) {
     throw new Error(res.status);
@@ -40,13 +40,14 @@ const lightbox = new SimpleLightbox('.gallery-images a', {
 function handleSearch(event) {
   event.preventDefault();
 
-  loaderEl.style.display = 'block';
+  loaderEl.style.display = 'inline-block';
 
   galleryEl.innerHTML = '';
 
   const form = event.currentTarget;
   const inputValue = form.elements.query.value;
   if (!inputValue) {
+    loaderEl.style.display = 'none';
     iziToast.show({
       title: '❌',
       messageColor: 'white',
@@ -66,6 +67,7 @@ function handleSearch(event) {
       const hits = data.hits;
 
       if (!data.total) {
+        loaderEl.style.display = 'none';
         iziToast.show({
           title: '❌',
           messageColor: 'white',
@@ -80,7 +82,7 @@ function handleSearch(event) {
       for (const hit of hits) {
         markup += createGallery(hit);
       }
-
+      loaderEl.style.display = 'none';
       galleryEl.innerHTML = markup;
       lightbox.refresh();
       console.log(markup);
