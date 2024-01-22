@@ -134,6 +134,7 @@ form.form-search {
   border-radius: 50%;
   position: relative;
   animation: rotate 1s linear infinite;
+  margin-left: 50%;
 }
 .loader::before,
 .loader::after {
