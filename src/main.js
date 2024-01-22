@@ -17,16 +17,9 @@ function checkResponse(res) {
   return res.json();
 }
 
-const urlParams = new URLSearchParams({
-  key: API_KEY,
-  q: value,
-  image_type: 'photo',
-  orientation: 'horizontal',
-  safesearch: 'true',
-});
-
 function fetchGallery(value) {
   const BASE_URL = 'https://pixabay.com/api';
+  const API_KEY = '41909271-8b5dab2225a1cd5a9757159a5';
   const urlParams = new URLSearchParams({
     key: API_KEY,
     q: value,
@@ -34,7 +27,7 @@ function fetchGallery(value) {
     orientation: 'horizontal',
     safesearch: 'true',
   });
-  const API_KEY = '41909271-8b5dab2225a1cd5a9757159a5';
+
   const url = `${BASE_URL}/?${urlParams}`;
   return fetch(url).then(checkResponse);
 }
@@ -46,7 +39,7 @@ const lightbox = new SimpleLightbox('.gallery-images a', {
 function handleSearch(event) {
   event.preventDefault();
 
-  loaderEl.style.display = 'block';
+  loaderEl.style.display = 'inline-block';
 
   galleryEl.innerHTML = '';
 
