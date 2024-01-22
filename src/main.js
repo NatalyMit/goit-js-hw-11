@@ -4,12 +4,17 @@ import 'izitoast/dist/css/iziToast.min.css';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 
-const formEl = document.querySelector('.form-seach');
+const lightbox = new SimpleLightbox('.gallery-images a', {
+  captionDelay: 250,
+});
+const formEl = document.querySelector('.form-search');
 const galleryEl = document.querySelector('.gallery-images');
 const loaderEl = document.querySelector('.loader');
 
 formEl.addEventListener('submit', handleSearch);
+
 loaderEl.style.display = 'none';
+
 function checkResponse(res) {
   if (!res.ok) {
     throw new Error(res.status);
@@ -26,16 +31,11 @@ function fetchGallery(value) {
     image_type: 'photo',
     orientation: 'horizontal',
     safesearch: 'true',
-    per_page: '9',
   });
 
   const url = `${BASE_URL}/?${urlParams}`;
   return fetch(url).then(checkResponse);
 }
-
-const lightbox = new SimpleLightbox('.gallery-images a', {
-  captionDelay: 250,
-});
 
 function handleSearch(event) {
   event.preventDefault();
@@ -45,14 +45,13 @@ function handleSearch(event) {
   galleryEl.innerHTML = '';
 
   const form = event.currentTarget;
-  const inputValue = form.elements.query.value;
+  const inputValue = form.elements.query.value.trim();
   if (!inputValue) {
     loaderEl.style.display = 'none';
     iziToast.show({
       title: '❌',
       messageColor: 'white',
-      message:
-        'Sorry, there are no images matching your search query.Please try again!',
+      message: 'Sorry, You have not entered any word.Please try again!',
       position: 'topRight',
       color: 'red',
     });
@@ -60,14 +59,11 @@ function handleSearch(event) {
     return;
   }
 
-  console.log(inputValue);
-
   fetchGallery(inputValue)
     .then(data => {
       const hits = data.hits;
 
       if (!data.total) {
-        loaderEl.style.display = 'none';
         iziToast.show({
           title: '❌',
           messageColor: 'white',
@@ -78,31 +74,30 @@ function handleSearch(event) {
         });
         return;
       }
-      let markup = '';
-      for (const hit of hits) {
-        markup += createGallery(hit);
-      }
+
       loaderEl.style.display = 'none';
-      galleryEl.innerHTML = markup;
+      galleryEl.innerHTML = createGallery(hits);
       lightbox.refresh();
-      console.log(markup);
     })
     .catch(error => console.log(error))
     .finally(() => {
       form.reset();
+      loaderEl.style.display = 'none';
     });
 }
 
-function createGallery({
-  webformatURL,
-  largeImageURL,
-  tags,
-  likes,
-  views,
-  comments,
-  downloads,
-}) {
-  return `<li class = "list-item">
+function createGallery(arr) {
+  return arr
+    .map(
+      ({
+        webformatURL,
+        largeImageURL,
+        tags,
+        likes,
+        views,
+        comments,
+        downloads,
+      }) => `<li class = "list-item">
     <a href="${largeImageURL}" ><img class="search-image" src = "${webformatURL}" alt = "${tags}" ><div class="options">
     <p class="options-item"> likes:<span class="options-item-span">${likes}</span></p>
     <p class="options-item"> views:<span class="options-item-span">${views}</span></p>
@@ -111,5 +106,7 @@ function createGallery({
   
     </a>
     
-    </li>`;
+    </li>`
+    )
+    .join('');
 }
