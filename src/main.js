@@ -40,7 +40,7 @@ const lightbox = new SimpleLightbox('.gallery-images a', {
 function handleSearch(event) {
   event.preventDefault();
 
-  loaderEl.style.display = 'inline-block';
+  loaderEl.style.display = 'block';
 
   galleryEl.innerHTML = '';
 
@@ -111,5 +111,3 @@ function createGallery({
     
     </li>`;
 }
-
-// gallery.on('show.simplelightbox', fetchGallery);
