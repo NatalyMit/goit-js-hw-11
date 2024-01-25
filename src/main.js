@@ -47,7 +47,6 @@ function handleSearch(event) {
   const form = event.currentTarget;
   const inputValue = form.elements.query.value.trim();
   if (!inputValue) {
-    loaderEl.style.display = 'none';
     iziToast.show({
       title: '❌',
       messageColor: 'white',
@@ -75,7 +74,6 @@ function handleSearch(event) {
         return;
       }
 
-      loaderEl.style.display = 'none';
       galleryEl.innerHTML = createGallery(hits);
       lightbox.refresh();
     })
